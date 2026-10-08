@@ -17,8 +17,8 @@ const CONFIG = {
   about: "I am an independent full-stack developer crafting clean, fast, and scalable digital products. Every project in this showroom is live and fully interactive inside your browser. Several turnkey apps and websites are available for direct purchase with complete, clean source code.",
   
   // WhatsApp Number: Country code + number, DIGITS ONLY, NO plus sign, NO spaces, NO dashes.
-  whatsappNumber: "916003428863",
-  displayPhone: "+91 6003428863",
+  whatsappNumber: "916006428863",
+  displayPhone: "+91 6006428863",
   
   // Contact & Socials
   email: "alex.rivera.developer@gmail.com",
