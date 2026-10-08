@@ -17,8 +17,8 @@ const CONFIG = {
   about: "I am an independent full-stack developer crafting clean, fast, and scalable digital products. Every project in this showroom is live and fully interactive inside your browser. Several turnkey apps and websites are available for direct purchase with complete, clean source code.",
   
   // WhatsApp Number: Country code + number, DIGITS ONLY, NO plus sign, NO spaces, NO dashes.
-  whatsappNumber: "916006428863",
-  displayPhone: "+91 6006428863",
+  whatsappNumber: "916003428863",
+  displayPhone: "+91 6003428863",
   
   // Contact & Socials
   email: "alex.rivera.developer@gmail.com",
@@ -43,15 +43,15 @@ const CONFIG = {
 
 const PROJECTS = [
   {
-    id: "bazario",
-    title: "Bazario",
-    type: "app", // "app" | "website" | "game"
+    id: "veloce",
+    title: "VELOCE typing test",
+    type: "website", // "app" | "website" | "game"
     status: "available", // "available" | "sold" | "coming-soon"
-    description: "Mobile-first e-commerce marketplace app with real-time cart, catalog browsing, and instant WhatsApp ordering.",
-    techStack: ["React", "Tailwind CSS", "LocalStorage", "WhatsApp API"],
-    liveUrl: "./demos/bazario.html",
+    description: "Minimalist high-speed typing speed trainer featuring real-time WPM calculation, accuracy metrics, and keyboard analytics.",
+    techStack: ["JavaScript", "HTML5 Canvas", "Web Audio API", "CSS Grid"],
+    liveUrl: "./demos/veloce.html",
     demoVideoUrl: "",
-    apkUrl: "https://github.com/example/bazario/releases/download/v1.0/bazario-release.apk",
+    apkUrl: "",
     thumbnail: "", // Left empty for automatic gradient card with title initials
     forSale: true,
     price: "Rs 15,000",
@@ -60,28 +60,28 @@ const PROJECTS = [
     date: "2026-09-15"
   },
   {
-    id: "veloce",
-    title: "VELOCE typing test",
-    type: "website",
+    id: "taskflow",
+    title: "TaskFlow Kanban",
+    type: "app",
     status: "available",
-    description: "Minimalist high-speed typing speed trainer featuring real-time WPM calculation, accuracy metrics, and keyboard analytics.",
-    techStack: ["JavaScript", "HTML5 Canvas", "Web Audio API", "CSS Grid"],
-    liveUrl: "./demos/veloce.html",
+    description: "Agile sprint management workspace with real-time column sorting, card reordering, and team collaboration export.",
+    techStack: ["React", "Tailwind CSS", "LocalStorage", "WhatsApp API"],
+    liveUrl: "./demos/taskflow.html",
     demoVideoUrl: "",
-    apkUrl: "",
+    apkUrl: "https://github.com/example/taskflow/releases/download/v1.0/taskflow-release.apk",
     thumbnail: "",
-    forSale: false,
-    price: "",
+    forSale: true,
+    price: "Rs 18,000",
     needsCamera: false,
     featured: true,
     date: "2026-09-01"
   },
   {
-    id: "novatek",
-    title: "Novatek tech store",
+    id: "docuforge",
+    title: "DocuForge API Studio",
     type: "website",
     status: "sold", // Demonstrates the grey "Sold" badge and disabled buy button
-    description: "Dark-mode commercial electronics storefront with hardware filtering, spec breakdowns, and inquiry checkout.",
+    description: "Developer API documentation portal with interactive endpoint tabs, payload schemas, and telemetry query tools.",
     techStack: ["HTML5", "CSS3", "Vanilla JS", "Responsive Design"],
     liveUrl: "./demos/novatek.html",
     demoVideoUrl: "",
@@ -131,7 +131,7 @@ const PROJECTS = [
     id: "fitpulse",
     title: "FitPulse PWA Tracker",
     type: "app",
-    status: "coming-soon", // Demonstrates the "Coming Soon" badge and disabled demo button
+    status: "coming-soon", // Demonstrates the "Coming Soon" badge and no demo button
     description: "Offline-first workout tracker with interval timers, calorie burn estimators, and local analytics dashboard.",
     techStack: ["Vanilla JS", "IndexedDB", "PWA Service Worker", "Chart.js"],
     liveUrl: "",
@@ -203,18 +203,18 @@ const FAQ = [
 const TESTIMONIALS = [
   {
     name: "Aarav Sharma",
-    role: "Founder, QuickCart",
-    text: "Bought the Bazario e-commerce template. The clean code saved us 3 weeks of development time. Alex helped us set it up in under 2 hours!"
+    role: "Founder, DevPulse",
+    text: "Acquired the TaskFlow kanban template. The clean modular code saved us 3 weeks of development time. Setup was completed smoothly in under 2 hours!"
   },
   {
     name: "Priya Nair",
     role: "Product Lead, EdVenture",
-    text: "The typing test game was flawless on mobile devices. Smooth animations, zero lag, and instant WhatsApp support whenever we needed tweaks."
+    text: "The typing speed trainer was flawless on mobile devices. Smooth animations, zero lag, and instant WhatsApp support whenever we needed tweaks."
   },
   {
     name: "Vikram Mehta",
     role: "Director, Apex Tech",
-    text: "Commissioned a custom hardware showcase site. The dark aesthetic and responsiveness exceeded our expectations. Highly recommended!"
+    text: "Commissioned a custom web app and showroom site. The dark aesthetic and responsiveness exceeded our expectations. Highly recommended!"
   }
 ];
 

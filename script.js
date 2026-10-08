@@ -3,28 +3,36 @@
  * 
  * Features:
  * - Single helper function for all WhatsApp links built from CONFIG.whatsappNumber
- * - Live search & multi-criterion sorting (Featured, Newest, For Sale, Price low/high)
+ * - "Tap to Try" hero trigger launches featured project in full-screen demo modal
+ * - Dynamic featured phone and browser mockups
+ * - Real-time live search & multi-criterion sorting (Featured, Newest, For Sale, Price low/high)
  * - Interactive filter chips with dynamic count badges
- * - Project status indicators ("available", "sold" with disabled buy, "coming-soon" with disabled demo)
+ * - Project status indicators:
+ *   - "available": normal live demo & buy/enquire
+ *   - "sold": grey "Sold" badge, disabled buy button, live demo still works
+ *   - "coming-soon": "Coming Soon" badge, no demo button, active enquiry
+ * - Native Web Share API on each card and inside modal (with fallback copy to clipboard & "Link copied" toast)
+ * - Direct deep links: opening modal updates URL hash to #project-<id>; opening URL with hash scrolls to projects and launches modal
  * - Dynamic Services section with direct WhatsApp enquiry
  * - Request a Quote form with validation and formatted WhatsApp dispatch
- * - Interactive FAQ accordion and Client Testimonials carousel
- * - Full-screen Live Demo modal with iframe sandboxing, camera permissions, and APK download
+ * - Interactive single-item FAQ accordion
+ * - Client Testimonials carousel (auto-hidden if empty)
+ * - Full-screen Live Demo modal with iframe sandboxing, camera permissions, fallback and close controls
  * - Floating WhatsApp quick button (hidden when modal is open)
- * - Back to top button and toast notifications
+ * - Back to top button, toast notification component, and PWA service worker registration
  */
 
 (function () {
   'use strict';
 
-  // 1. Data Fallback Validation
+  // 1. Data Validation & Configuration
   const cfg = (typeof CONFIG !== 'undefined') ? CONFIG : {
     name: "Alex Rivera",
-    tagline: "I build responsive web apps, high-performance websites & interactive games.",
+    tagline: "I build responsive web apps, high-performance websites & interactive browser games.",
     about: "Full-stack developer crafting high-performance digital products.",
-    whatsappNumber: "916006428863",
-    displayPhone: "+91 6006428863",
-    email: "alex.developer@example.com",
+    whatsappNumber: "916003428863",
+    displayPhone: "+91 6003428863",
+    email: "alex.rivera.developer@gmail.com",
     skills: ["JavaScript", "React", "Node.js"]
   };
 
@@ -39,9 +47,10 @@
   let sortOrder = 'featured';
   let modalTimeoutId = null;
   let isModalOpen = false;
+  let currentModalProject = null;
 
   // 3. DOM Element References
-  // Brand & General
+  // Brand & Identity
   const brandNameEls = document.querySelectorAll('.bind-brand-name');
   const taglineEls = document.querySelectorAll('.bind-tagline');
   const aboutTextEl = document.getElementById('aboutText');
@@ -49,6 +58,16 @@
   const browserAddressBar = document.getElementById('browserAddressBar');
   const footerLastUpdated = document.getElementById('footerLastUpdated');
   const currentYearEl = document.getElementById('currentYear');
+
+  // Hero Mockups & Triggers
+  const mockupTitle = document.getElementById('mockupTitle');
+  const mockupFeaturedTag = document.getElementById('mockupFeaturedTag');
+  const heroPhoneAppName = document.getElementById('heroPhoneAppName');
+  const heroPhoneBadge = document.getElementById('heroPhoneBadge');
+  const browserMockupTrigger = document.getElementById('browserMockupTrigger');
+  const phoneMockupTrigger = document.getElementById('phoneMockupTrigger');
+  const heroTapToTryBtn = document.getElementById('heroTapToTryBtn');
+  const heroPlayTrigger = document.getElementById('heroPlayTrigger');
 
   // Stats & Badges
   const totalProjectsCountEls = document.querySelectorAll('.bind-total-projects');
@@ -71,6 +90,7 @@
 
   // Services, Testimonials, FAQ
   const servicesGridEl = document.getElementById('servicesGrid');
+  const testimonialsSection = document.getElementById('testimonials');
   const testimonialsCarouselEl = document.getElementById('testimonialsCarousel');
   const faqAccordionEl = document.getElementById('faqAccordion');
 
@@ -124,22 +144,18 @@
   const modalErrorNewTabBtn = document.getElementById('modalErrorNewTabBtn');
   const modalFrameContainer = document.getElementById('modalFrameContainer');
 
-  // Current active project in modal (for sharing/buying)
-  let currentModalProject = null;
-
   // ==========================================================================
   // SINGLE WHATSAPP HELPER FUNCTION
-  // All WhatsApp links everywhere must be built from CONFIG.whatsappNumber
+  // Built strictly from CONFIG.whatsappNumber. No hardcoded numbers anywhere else.
   // ==========================================================================
   function buildWhatsAppUrl(message = '') {
-    const rawNum = cfg.whatsappNumber ? String(cfg.whatsappNumber) : '916006428863';
+    const rawNum = cfg.whatsappNumber ? String(cfg.whatsappNumber) : '916003428863';
     const cleanPhone = rawNum.replace(/[^0-9]/g, '');
-    const defaultText = `Hi ${cfg.name || 'Developer'}, I checked your portfolio showroom and would like to discuss a project.`;
+    const defaultText = `Hi ${cfg.name || 'Developer'}, I visited your portfolio website.`;
     const msgToSend = message && message.trim() ? message.trim() : defaultText;
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgToSend)}`;
   }
 
-  // Pre-filled WhatsApp link for a project buy or enquiry
   function getProjectWhatsAppUrl(project) {
     if (!project) return buildWhatsAppUrl();
     if (project.forSale && project.status !== 'sold') {
@@ -150,7 +166,6 @@
     }
   }
 
-  // Pre-filled WhatsApp link for a service inquiry
   function getServiceWhatsAppUrl(service) {
     if (!service) return buildWhatsAppUrl();
     const priceText = service.startingPrice ? ` (${service.startingPrice})` : '';
@@ -158,7 +173,7 @@
   }
 
   // ==========================================================================
-  // UTILITIES
+  // UTILITIES & REUSABLE TOAST
   // ==========================================================================
   function getInitials(title) {
     if (!title) return "PR";
@@ -194,14 +209,50 @@
     }, 2800);
   }
 
+  // Web Share API helper with clipboard fallback
+  function shareProject(project) {
+    if (!project) return;
+    const shareUrl = `${window.location.origin}${window.location.pathname}#project-${project.id}`;
+    const shareData = {
+      title: `${project.title} - ${cfg.name || 'Developer'} Portfolio`,
+      text: `Check out ${project.title}: ${project.description}`,
+      url: shareUrl
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch((err) => {
+        if (err.name !== 'AbortError') {
+          copyToClipboard(shareUrl, 'Link copied');
+        }
+      });
+    } else {
+      copyToClipboard(shareUrl, 'Link copied');
+    }
+  }
+
+  function copyToClipboard(text, successMsg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg);
+      }).catch(() => {
+        promptFallback(text);
+      });
+    } else {
+      promptFallback(text);
+    }
+  }
+
+  function promptFallback(text) {
+    window.prompt('Copy project URL:', text);
+  }
+
   // ==========================================================================
   // INITIALIZE CONFIGURATION & BRAND DATA
   // ==========================================================================
   function initConfig() {
-    // Dynamic brand & owner name everywhere
     const ownerName = cfg.name || 'Developer';
     brandNameEls.forEach(el => el.textContent = ownerName);
-    taglineEls.forEach(el => el.textContent = cfg.tagline || 'I build web apps, websites & interactive games.');
+    taglineEls.forEach(el => el.textContent = cfg.tagline || 'I build web apps, websites & interactive browser games.');
 
     if (aboutTextEl) {
       aboutTextEl.textContent = cfg.about || '';
@@ -218,7 +269,7 @@
       ).join('');
     }
 
-    // Counters
+    // Counters & Trust Row
     const totalCount = projectList.length;
     const forSaleTotal = projectList.filter(p => p.forSale).length;
     const liveDemosTotal = projectList.filter(p => p.liveUrl && p.status !== 'coming-soon').length;
@@ -230,27 +281,29 @@
     if (forSaleCountEl) forSaleCountEl.textContent = forSaleTotal;
     if (liveDemosCountEl) liveDemosCountEl.textContent = liveDemosTotal;
 
+    // Strict Trust Row Copy per PRD
     if (trustCountProjects) trustCountProjects.textContent = `${totalCount} Projects Built`;
-    if (trustCountLive) trustCountLive.textContent = `${liveDemosTotal} Live Demos`;
-    if (trustCountSale) trustCountSale.textContent = `${forSaleTotal} For Sale`;
+    if (trustCountLive) trustCountLive.textContent = `Live Demos Available`;
+    if (trustCountSale) trustCountSale.textContent = `Projects For Sale`;
 
+    // Type cards
     if (typeCountApps) typeCountApps.textContent = `${appsTotal} Available`;
     if (typeCountWebsites) typeCountWebsites.textContent = `${websitesTotal} Available`;
     if (typeCountGames) typeCountGames.textContent = `${gamesTotal} Available`;
     if (typeCountSale) typeCountSale.textContent = `${forSaleTotal} Turnkey Builds`;
 
-    // WhatsApp buttons built from single helper
+    // Direct WhatsApp Buttons
     const defaultWaUrl = buildWhatsAppUrl();
     if (headerWaBtn) headerWaBtn.href = defaultWaUrl;
     if (contactWaBtn) contactWaBtn.href = defaultWaUrl;
 
-    // Floating WhatsApp button
+    // Floating WhatsApp Button
     if (floatingWaBtn) {
       floatingWaBtn.href = buildWhatsAppUrl("Hi, I visited your portfolio website.");
     }
 
-    // Direct Phone & "Call Me" button
-    const cleanPhoneDigits = (cfg.whatsappNumber || '916006428863').replace(/[^0-9]/g, '');
+    // Direct Phone Number & Call Me Button
+    const cleanPhoneDigits = (cfg.whatsappNumber || '916003428863').replace(/[^0-9]/g, '');
     if (displayPhoneText) {
       displayPhoneText.textContent = cfg.displayPhone || `+${cleanPhoneDigits}`;
     }
@@ -291,6 +344,23 @@
     }
     if (currentYearEl) {
       currentYearEl.textContent = new Date().getFullYear();
+    }
+
+    // Populate Hero Mockup Visuals from real projects
+    const featuredApp = projectList.find(p => p.featured && p.type === 'app') || projectList.find(p => p.featured) || projectList[0];
+    const featuredWeb = projectList.find(p => p.featured && p.type === 'website') || projectList.find(p => p.type === 'website') || projectList[1] || projectList[0];
+
+    if (heroPhoneAppName && featuredApp) {
+      heroPhoneAppName.textContent = featuredApp.title;
+    }
+    if (heroPhoneBadge && featuredApp) {
+      heroPhoneBadge.textContent = featuredApp.forSale ? 'TURNKEY BUILD' : 'FEATURED DEMO';
+    }
+    if (mockupTitle && featuredWeb) {
+      mockupTitle.textContent = featuredWeb.title;
+    }
+    if (mockupFeaturedTag && featuredWeb) {
+      mockupFeaturedTag.textContent = 'FEATURED BUILD';
     }
 
     // Setup Bottom "Featured For Sale Project" Banner
@@ -351,7 +421,7 @@
   }
 
   // ==========================================================================
-  // PROJECTS GRID RENDERING (FILTER + SEARCH + SORT + STATUSES)
+  // PROJECTS GRID RENDERING (FILTER + SEARCH + SORT + STATUS BADGES)
   // ==========================================================================
   function renderProjects() {
     if (!projectsGridEl) return;
@@ -363,7 +433,7 @@
       return p.type === activeFilter;
     });
 
-    // 2. Filter by search query (title, description, or tech stack)
+    // 2. Filter by search query (title, description, tech stack)
     if (searchQuery.trim() !== '') {
       const q = searchQuery.trim().toLowerCase();
       filtered = filtered.filter(p => {
@@ -424,7 +494,7 @@
       return;
     }
 
-    // 5. Render cards
+    // 5. Render project cards
     projectsGridEl.innerHTML = filtered.map(project => {
       const status = project.status || 'available';
       const isSold = status === 'sold';
@@ -432,9 +502,9 @@
 
       const waUrl = getProjectWhatsAppUrl(project);
       const isVideoOnly = !project.liveUrl && project.demoVideoUrl;
-      const demoBtnText = isVideoOnly ? 'Watch Demo' : 'Open Live Demo';
+      const demoBtnText = isVideoOnly ? 'Play Demo' : 'Open Live Demo';
 
-      // Thumbnail handling
+      // Thumbnail handling (CSS gradient cards or custom image)
       let mediaMarkup = '';
       if (project.thumbnail && project.thumbnail.trim() !== '') {
         mediaMarkup = `
@@ -457,9 +527,9 @@
       // Status Badges
       let statusBadgeMarkup = '';
       if (isSold) {
-        statusBadgeMarkup = `<span class="status-badge-sold">● Sold</span>`;
+        statusBadgeMarkup = `<span class="status-badge-sold">Sold</span>`;
       } else if (isComingSoon) {
-        statusBadgeMarkup = `<span class="status-badge-coming-soon">● Coming Soon</span>`;
+        statusBadgeMarkup = `<span class="status-badge-coming-soon">Coming Soon</span>`;
       } else if (project.forSale) {
         statusBadgeMarkup = `
           <span class="for-sale-badge">
@@ -468,16 +538,11 @@
         `;
       }
 
-      // Action Buttons logic
-      // Live Demo: works for available and sold; disabled for coming-soon
+      // Action Buttons logic:
+      // - If coming-soon: NO demo button shown (per requirement e)
+      // - If sold: Buy button disabled, live demo still works!
       let demoButtonMarkup = '';
-      if (isComingSoon) {
-        demoButtonMarkup = `
-          <button class="btn-card-demo btn-disabled" disabled aria-disabled="true" title="Project is currently in development">
-            <span>⏳</span> In Progress
-          </button>
-        `;
-      } else {
+      if (!isComingSoon) {
         demoButtonMarkup = `
           <button class="btn-card-demo" data-id="${project.id}">
             <span>▶</span> ${demoBtnText}
@@ -485,7 +550,6 @@
         `;
       }
 
-      // Buy / Enquire: disabled if sold; normal otherwise
       let buyButtonMarkup = '';
       if (isSold) {
         buyButtonMarkup = `
@@ -501,7 +565,7 @@
         `;
       }
 
-      // Tech Stack
+      // Tech Stack chips
       const techStackMarkup = (project.techStack && Array.isArray(project.techStack))
         ? project.techStack.map(t => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('')
         : '';
@@ -524,7 +588,7 @@
             <div class="card-actions">
               ${demoButtonMarkup}
               ${buyButtonMarkup}
-              <button class="btn-card-share" data-id="${project.id}" title="Share project link" aria-label="Share project link">
+              <button class="btn-card-share" data-id="${project.id}" title="Share link to ${escapeHtml(project.title)}" aria-label="Share project link">
                 🔗
               </button>
             </div>
@@ -534,7 +598,7 @@
     }).join('');
 
     // Attach click listeners to cards
-    projectsGridEl.querySelectorAll('.btn-card-demo:not(.btn-disabled)').forEach(btn => {
+    projectsGridEl.querySelectorAll('.btn-card-demo').forEach(btn => {
       btn.addEventListener('click', () => {
         const pId = btn.dataset.id;
         const targetProj = projectList.find(p => p.id === pId);
@@ -548,8 +612,7 @@
         e.stopPropagation();
         const pId = btn.dataset.id;
         const targetProj = projectList.find(p => p.id === pId);
-        const urlToCopy = `${window.location.origin}${window.location.pathname}#project-${pId}`;
-        copyToClipboard(urlToCopy, `Link to ${targetProj ? targetProj.title : 'project'} copied to clipboard!`);
+        if (targetProj) shareProject(targetProj);
       });
     });
   }
@@ -582,9 +645,17 @@
   }
 
   // ==========================================================================
-  // TESTIMONIALS SECTION RENDERING
+  // TESTIMONIALS SECTION RENDERING (AUTO-HIDE IF EMPTY)
   // ==========================================================================
   function renderTestimonials() {
+    if (!testimonialsSection) return;
+
+    if (!testimonialsList || testimonialsList.length === 0) {
+      testimonialsSection.style.display = 'none';
+      return;
+    }
+
+    testimonialsSection.style.display = '';
     if (!testimonialsCarouselEl) return;
 
     testimonialsCarouselEl.innerHTML = testimonialsList.map(t => `
@@ -602,7 +673,7 @@
   }
 
   // ==========================================================================
-  // FAQ ACCORDION RENDERING & TOGGLE HANDLER
+  // FAQ ACCORDION RENDERING & TOGGLE HANDLER (ONLY ONE OPEN AT A TIME)
   // ==========================================================================
   function renderFaq() {
     if (!faqAccordionEl) return;
@@ -624,7 +695,7 @@
         const item = btn.closest('.faq-item');
         const isActive = item.classList.contains('active');
 
-        // Close other items for single-open accordion feel
+        // Close other items for smooth accordion
         faqAccordionEl.querySelectorAll('.faq-item').forEach(other => {
           if (other !== item) {
             other.classList.remove('active');
@@ -647,12 +718,10 @@
 
   // ==========================================================================
   // REQUEST A QUOTE FORM HANDLER
-  // Validates name & details, constructs prefilled WhatsApp message and dispatches
   // ==========================================================================
   function initQuoteForm() {
     if (!quoteForm) return;
 
-    // Clear errors on input
     if (quoteName) {
       quoteName.addEventListener('input', () => {
         quoteName.classList.remove('error');
@@ -690,7 +759,6 @@
 
       if (!isValid) return;
 
-      // Construct formatted WhatsApp message
       const formattedMessage = [
         `*⚡ New Project Quote Request*`,
         ``,
@@ -704,8 +772,6 @@
 
       const targetUrl = buildWhatsAppUrl(formattedMessage);
       showToast('Opening WhatsApp with your quote request...');
-
-      // Open WhatsApp in new tab
       window.open(targetUrl, '_blank', 'noopener,noreferrer');
     });
   }
@@ -745,13 +811,13 @@
   }
 
   // ==========================================================================
-  // LIVE DEMO MODAL IMPLEMENTATION
+  // LIVE DEMO MODAL IMPLEMENTATION & DIRECT HASH NAVIGATION
   // ==========================================================================
   function openModal(project) {
     if (!demoModal || !project) return;
     currentModalProject = project;
 
-    // Reset previous states
+    // Reset previous modal states
     clearTimeout(modalTimeoutId);
     modalSpinner.style.display = 'flex';
     modalErrorBox.classList.remove('show');
@@ -761,7 +827,7 @@
     modalTitle.textContent = project.title;
     modalTypeTag.textContent = (project.type || 'APP').toUpperCase();
 
-    // Buy/Enquire WhatsApp button
+    // Buy / Enquire WhatsApp link
     const waUrl = getProjectWhatsAppUrl(project);
     modalBuyBtn.href = waUrl;
     if (modalBuyBtnText) {
@@ -848,11 +914,11 @@
     demoModal.classList.add('active');
     isModalOpen = true;
 
-    // Push history state so browser back button closes modal smoothly
+    // Update URL hash for direct project sharing (#project-<id>)
     try {
-      history.pushState({ modalOpen: true }, '');
+      history.replaceState({ modalProject: project.id }, '', `#project-${project.id}`);
     } catch (e) {
-      // Ignore security errors in restricted iframe environments
+      // Ignore in restricted sandboxes
     }
   }
 
@@ -866,6 +932,13 @@
     document.body.classList.remove('modal-open');
     isModalOpen = false;
     currentModalProject = null;
+
+    // Clean up URL hash cleanly
+    try {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    } catch (e) {
+      // Ignore
+    }
   }
 
   function initModalListeners() {
@@ -876,9 +949,9 @@
     // Modal Share Button
     if (modalShareBtn) {
       modalShareBtn.addEventListener('click', () => {
-        if (!currentModalProject) return;
-        const urlToCopy = `${window.location.origin}${window.location.pathname}#project-${currentModalProject.id}`;
-        copyToClipboard(urlToCopy, `Link to ${currentModalProject.title} copied!`);
+        if (currentModalProject) {
+          shareProject(currentModalProject);
+        }
       });
     }
 
@@ -897,27 +970,52 @@
     });
   }
 
-  // Clipboard copy helper
-  function copyToClipboard(text, successMsg) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(successMsg);
-      }).catch(() => {
-        promptFallback(text);
-      });
-    } else {
-      promptFallback(text);
-    }
-  }
-
-  function promptFallback(text) {
-    window.prompt('Copy project URL:', text);
-  }
-
   // ==========================================================================
-  // NAVIGATION & HERO TRIGGERS
+  // HERO "TAP TO TRY" & NAVIGATION TRIGGERS
   // ==========================================================================
   function initNavAndHero() {
+    // "Tap to try" on hero phone mockup: opens demo modal for the first project in PROJECTS
+    if (heroTapToTryBtn) {
+      heroTapToTryBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof PROJECTS !== 'undefined' && PROJECTS.length > 0) {
+          openModal(PROJECTS[0]);
+        } else if (projectList && projectList.length > 0) {
+          openModal(projectList[0]);
+        }
+      });
+    }
+
+    if (phoneMockupTrigger) {
+      phoneMockupTrigger.addEventListener('click', () => {
+        if (typeof PROJECTS !== 'undefined' && PROJECTS.length > 0) {
+          openModal(PROJECTS[0]);
+        } else if (projectList && projectList.length > 0) {
+          openModal(projectList[0]);
+        }
+      });
+    }
+
+    if (browserMockupTrigger) {
+      browserMockupTrigger.addEventListener('click', () => {
+        if (typeof PROJECTS !== 'undefined' && PROJECTS.length > 0) {
+          openModal(PROJECTS[0]);
+        } else if (projectList && projectList.length > 0) {
+          openModal(projectList[0]);
+        }
+      });
+    }
+
+    if (heroPlayTrigger) {
+      heroPlayTrigger.addEventListener('click', () => {
+        if (typeof PROJECTS !== 'undefined' && PROJECTS.length > 0) {
+          openModal(PROJECTS[0]);
+        } else if (projectList && projectList.length > 0) {
+          openModal(projectList[0]);
+        }
+      });
+    }
+
     // Mobile Drawer
     if (btnMobileMenu && mobileNavDrawer) {
       btnMobileMenu.addEventListener('click', () => {
@@ -949,31 +1047,6 @@
       });
     });
 
-    // Hero Triggers
-    const heroPlayTrigger = document.getElementById('heroPlayTrigger');
-    if (heroPlayTrigger) {
-      heroPlayTrigger.addEventListener('click', () => {
-        const featured = projectList.find(p => p.featured) || projectList[0];
-        if (featured) openModal(featured);
-      });
-    }
-
-    const phoneMockupTrigger = document.getElementById('phoneMockupTrigger');
-    if (phoneMockupTrigger) {
-      phoneMockupTrigger.addEventListener('click', () => {
-        const bazario = projectList.find(p => p.id === 'bazario') || projectList[0];
-        if (bazario) openModal(bazario);
-      });
-    }
-
-    const browserMockupTrigger = document.getElementById('browserMockupTrigger');
-    if (browserMockupTrigger) {
-      browserMockupTrigger.addEventListener('click', () => {
-        const veloce = projectList.find(p => p.id === 'veloce') || projectList[1] || projectList[0];
-        if (veloce) openModal(veloce);
-      });
-    }
-
     // Back to top button visibility and click
     if (backToTopBtn) {
       window.addEventListener('scroll', () => {
@@ -986,6 +1059,38 @@
 
       backToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+  }
+
+  // ==========================================================================
+  // DIRECT PROJECT LINK DISPATCH ON PAGE LOAD (#project-<id>)
+  // ==========================================================================
+  function handleDirectProjectHash() {
+    if (window.location.hash && window.location.hash.startsWith('#project-')) {
+      const matchId = window.location.hash.replace('#project-', '');
+      const matched = projectList.find(p => p.id === matchId);
+      if (matched) {
+        const projSec = document.getElementById('projects');
+        if (projSec) {
+          projSec.scrollIntoView({ behavior: 'smooth' });
+        }
+        setTimeout(() => {
+          openModal(matched);
+        }, 300);
+      }
+    }
+  }
+
+  // ==========================================================================
+  // REGISTER SERVICE WORKER (OFFLINE PWA)
+  // ==========================================================================
+  function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {
+          // Graceful fallback for non-supported or restricted environments
+        });
       });
     }
   }
@@ -1004,15 +1109,8 @@
     initQuoteForm();
     initModalListeners();
     initNavAndHero();
-
-    // Check if initial hash matches a project ID
-    if (window.location.hash) {
-      const matchId = window.location.hash.replace('#project-', '');
-      const matched = projectList.find(p => p.id === matchId);
-      if (matched) {
-        setTimeout(() => openModal(matched), 350);
-      }
-    }
+    handleDirectProjectHash();
+    registerServiceWorker();
   }
 
   document.addEventListener('DOMContentLoaded', bootstrap);
@@ -1020,7 +1118,7 @@
     bootstrap();
   }
 
-  // Expose global controller
+  // Expose global app instance
   window.ShowroomApp = {
     openModal,
     closeModal,
@@ -1029,7 +1127,8 @@
       renderFilterChips();
       renderProjects();
     },
-    buildWhatsAppUrl
+    buildWhatsAppUrl,
+    shareProject
   };
 
 })();

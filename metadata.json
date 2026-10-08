@@ -1,6 +1,10 @@
 {
   "name": "Alex Rivera - Developer Portfolio & Project Showroom",
   "description": "Personal portfolio and interactive project showroom for freelance developer Alex Rivera. Run live apps, websites, and games directly in-page and enquire on WhatsApp.",
-  "requestFramePermissions": ["camera"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

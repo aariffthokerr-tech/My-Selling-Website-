@@ -3,68 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novatek Tech Store - High-End Electronics</title>
+  <title>DocuForge - Modern API Documentation</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
     body { background:#07120a; color:#f0fdf4; padding:20px; min-height:100vh; }
-    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid #14281c; }
     .brand { font-size:22px; font-weight:800; color:#bef264; letter-spacing:1px; }
     .nav-tabs { display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px; }
     .tab { padding:6px 14px; background:#0c1d12; border:1px solid #1a3824; border-radius:20px; color:#9ca3af; font-size:13px; cursor:pointer; }
     .tab.active { background:#bef264; color:#041007; font-weight:700; border-color:#bef264; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; }
     .item { background:#0a1910; border:1px solid #163321; border-radius:14px; padding:16px; transition:0.2s; }
     .item:hover { border-color:#bef264; }
-    .icon { font-size:40px; margin-bottom:12px; }
-    .item h3 { font-size:16px; margin-bottom:6px; }
-    .specs { font-size:12px; color:#86efac; margin-bottom:12px; }
+    .badge { font-size:11px; background:#142d1e; color:#86efac; padding:3px 8px; border-radius:4px; display:inline-block; margin-bottom:8px; font-weight:700; }
+    .item h3 { font-size:16px; margin-bottom:6px; color:#f0fdf4; }
+    .specs { font-size:12px; color:#9ca3af; margin-bottom:12px; font-family:sans-serif; line-height:1.4; }
+    .code-preview { background:#040906; border:1px solid #183321; border-radius:8px; padding:10px; font-size:12px; color:#bef264; overflow-x:auto; margin-bottom:12px; }
     .row { display:flex; justify-content:space-between; align-items:center; }
-    .price { font-size:16px; font-weight:800; color:#bef264; }
     .btn { background:#142d1e; border:1px solid #235235; color:#bef264; padding:8px 12px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600; }
     .btn:hover { background:#bef264; color:#061309; }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">NOVATEK ELECTRONICS</div>
-    <div style="font-size:13px; color:#86efac;">⚡ 24h Express Dispatch</div>
+    <div class="brand">DOCUFORGE API STUDIO</div>
+    <div style="font-size:13px; color:#86efac;">v2.4 Developer Release</div>
   </header>
   <div class="nav-tabs">
-    <div class="tab active" onclick="filterItems('all', this)">All Hardware</div>
-    <div class="tab" onclick="filterItems('audio', this)">Audio</div>
-    <div class="tab" onclick="filterItems('wearable', this)">Wearables</div>
-    <div class="tab" onclick="filterItems('power', this)">Power</div>
+    <div class="tab active" onclick="filterItems('all', this)">All Endpoints</div>
+    <div class="tab" onclick="filterItems('auth', this)">Authentication</div>
+    <div class="tab" onclick="filterItems('events', this)">Webhooks</div>
+    <div class="tab" onclick="filterItems('analytics', this)">Telemetry</div>
   </div>
   <div class="grid" id="grid">
-    <div class="item" data-cat="audio">
-      <div class="icon">🎧</div>
-      <h3>Spatial Sound X-900</h3>
-      <div class="specs">Active ANC · 40h Battery · LDAC</div>
+    <div class="item" data-cat="auth">
+      <span class="badge">POST /v1/auth/session</span>
+      <h3>OAuth2 Token Exchange</h3>
+      <div class="specs">Issues cryptographically signed JWT tokens with automated refresh rotations.</div>
+      <div class="code-preview">curl -X POST /v1/auth/token -H "Authorization: Bearer key"</div>
       <div class="row">
-        <span class="price">Rs 18,990</span>
-        <button class="btn" onclick="alert('Added Spatial Sound X-900 to cart')">Select Item</button>
+        <button class="btn" onclick="showFeedback('Copied curl snippet')">Copy Snippet</button>
       </div>
     </div>
-    <div class="item" data-cat="wearable">
-      <div class="icon">⌚</div>
-      <h3>ChronoTitan Watch V2</h3>
-      <div class="specs">Titanium Frame · Sapphire Glass · GPS</div>
+    <div class="item" data-cat="events">
+      <span class="badge">POST /v1/events/subscribe</span>
+      <h3>Real-time Webhook Dispatch</h3>
+      <div class="specs">Subscribes endpoint handlers to transactional updates and payload callbacks.</div>
+      <div class="code-preview">event: "project.created", payload: { id: "p1" }</div>
       <div class="row">
-        <span class="price">Rs 24,500</span>
-        <button class="btn" onclick="alert('Added ChronoTitan Watch V2 to cart')">Select Item</button>
+        <button class="btn" onclick="showFeedback('Copied event schema')">Copy Schema</button>
       </div>
     </div>
-    <div class="item" data-cat="power">
-      <div class="icon">⚡</div>
-      <h3>GaN Fast Station 140W</h3>
-      <div class="specs">4x USB-C · Power Delivery 3.1</div>
+    <div class="item" data-cat="analytics">
+      <span class="badge">GET /v1/metrics/latency</span>
+      <h3>Telemetry & Latency Engine</h3>
+      <div class="specs">Aggregates percentile response durations and request volume trends.</div>
+      <div class="code-preview">response: { p99: "18ms", requests_sec: 4200 }</div>
       <div class="row">
-        <span class="price">Rs 8,200</span>
-        <button class="btn" onclick="alert('Added GaN Fast Station 140W to cart')">Select Item</button>
+        <button class="btn" onclick="showFeedback('Copied metrics query')">Copy Query</button>
       </div>
     </div>
   </div>
+  <div id="feedbackToast" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#bef264; color:#041007; font-weight:700; font-size:12px; padding:8px 16px; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.5);"></div>
   <script>
+    function showFeedback(text) {
+      const fb = document.getElementById('feedbackToast');
+      if (!fb) return;
+      fb.textContent = text;
+      fb.style.display = 'block';
+      setTimeout(() => { fb.style.display = 'none'; }, 2000);
+    }
     function filterItems(cat, el) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
