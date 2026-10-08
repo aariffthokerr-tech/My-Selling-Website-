@@ -3,21 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex Rivera - Freelance Developer Portfolio &amp; Project Showroom</title>
-  <meta name="description" content="Portfolio and interactive project showroom for freelance developer Alex Rivera. Test live web apps, websites, and games inside the browser or buy turnkey code on WhatsApp." />
+  <title>Developer Portfolio &amp; Project Showroom</title>
+  <meta name="description" content="Portfolio and interactive project showroom. Test live web apps, websites, and games inside the browser or buy turnkey code on WhatsApp." />
   
   <!-- Open Graph / Social Sharing Meta -->
-  <meta property="og:title" content="Alex Rivera - Developer Portfolio &amp; Project Showroom" />
+  <meta property="og:title" content="Developer Portfolio &amp; Project Showroom" />
   <meta property="og:description" content="Try live interactive web apps and games directly in your browser. Available for hire and turnkey code purchases." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Google Fonts: Plus Jakarta Sans (Clean Modern Sans) & Caveat (Handwritten Script Accent) -->
+  <!-- PWA Manifest & Mobile Web App Meta -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#050d08" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%23050d08'/><circle cx='96' cy='96' r='60' fill='%2310261b' stroke='%23c6f432' stroke-width='8'/><text x='96' y='116' font-size='64' font-weight='bold' fill='%23c6f432' text-anchor='middle'>⚡</text></svg>" />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Caveat -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Vanilla CSS Stylesheet (Compatible with Acode & GitHub Pages) -->
+  <!-- Vanilla CSS Stylesheet -->
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -28,7 +35,7 @@
       <!-- Owner Brand from CONFIG -->
       <a href="#hero" class="brand" aria-label="Home">
         <span class="brand-dot"></span>
-        <span class="bind-brand-name brand-text">Alex Rivera</span>
+        <span class="bind-brand-name brand-text">Developer</span>
       </a>
 
       <!-- Floating White Pill Navigation (Desktop) -->
@@ -36,7 +43,8 @@
         <a href="#hero" class="nav-item active">Home</a>
         <a href="#projects" class="nav-item">Projects</a>
         <a href="#projects" class="nav-item" onclick="ShowroomApp.setFilter('forsale')">For Sale</a>
-        <a href="#about" class="nav-item">About</a>
+        <a href="#services" class="nav-item">Services</a>
+        <a href="#faq" class="nav-item">FAQ</a>
         <a href="#contact" class="nav-item">Contact</a>
       </nav>
 
@@ -59,7 +67,9 @@
       <a href="#types" class="mobile-nav-item">Browse Types</a>
       <a href="#projects" class="mobile-nav-item">All Projects</a>
       <a href="#projects" class="mobile-nav-item" onclick="ShowroomApp.setFilter('forsale')">For Sale</a>
-      <a href="#about" class="mobile-nav-item">About</a>
+      <a href="#services" class="mobile-nav-item">Services</a>
+      <a href="#testimonials" class="mobile-nav-item">Reviews</a>
+      <a href="#faq" class="mobile-nav-item">FAQ</a>
       <a href="#contact" class="mobile-nav-item">Contact</a>
     </div>
   </header>
@@ -67,7 +77,7 @@
   <!-- Main Content -->
   <main>
 
-    <!-- Hero Section (Dark Forest Green with Cursive Accent & Glowing Concentric Rings) -->
+    <!-- Hero Section -->
     <section class="hero-section" id="hero">
       <div class="container">
         <div class="hero-grid">
@@ -100,7 +110,7 @@
               </div>
             </div>
 
-            <!-- Row of 4 Trust Items (Computed from Data) -->
+            <!-- Row of 4 Trust Items -->
             <div class="trust-badges-row">
               <div class="trust-item">
                 <div class="trust-icon-box">💻</div>
@@ -137,7 +147,7 @@
 
           </div>
 
-          <!-- Right Hero Visual Showcase (Browser & Mobile Device Frame Mockup over Halo Ring) -->
+          <!-- Right Hero Visual Showcase -->
           <div class="hero-visual">
             <div class="visual-rings-container">
               <div class="halo-ring halo-ring-1"></div>
@@ -153,7 +163,7 @@
                       <span class="dot dot-yellow"></span>
                       <span class="dot dot-green"></span>
                     </div>
-                    <div class="browser-address">https://alexrivera.dev/showroom</div>
+                    <div class="browser-address" id="browserAddressBar">https://showroom.dev</div>
                   </div>
                   <div class="browser-content">
                     <div>
@@ -192,7 +202,7 @@
       </div>
     </section>
 
-    <!-- "Browse By Type" Section (4 Cards: Apps, Websites, Games, For Sale) -->
+    <!-- "Browse By Type" Section -->
     <section class="section-browse-type" id="types">
       <div class="container">
         
@@ -202,18 +212,15 @@
         </div>
 
         <div class="type-cards-grid">
-          
-          <!-- Card 1: Apps -->
           <div class="type-card" data-filter="app">
             <div class="type-card-icon-box">📱</div>
             <div class="type-card-info">
               <h3>Apps</h3>
-              <div class="type-card-count" id="typeCountApps">1 Available</div>
+              <div class="type-card-count" id="typeCountApps">2 Available</div>
               <div class="type-card-link">Browse Apps <span>→</span></div>
             </div>
           </div>
 
-          <!-- Card 2: Websites -->
           <div class="type-card" data-filter="website">
             <div class="type-card-icon-box">🌐</div>
             <div class="type-card-info">
@@ -223,7 +230,6 @@
             </div>
           </div>
 
-          <!-- Card 3: Games -->
           <div class="type-card" data-filter="game">
             <div class="type-card-icon-box">🎮</div>
             <div class="type-card-info">
@@ -233,49 +239,59 @@
             </div>
           </div>
 
-          <!-- Card 4: For Sale -->
           <div class="type-card" data-filter="forsale">
             <div class="type-card-icon-box">🏷️</div>
             <div class="type-card-info">
               <h3>For Sale</h3>
-              <div class="type-card-count" id="typeCountSale">3 Turnkey Builds</div>
+              <div class="type-card-count" id="typeCountSale">4 Turnkey Builds</div>
               <div class="type-card-link">Browse For Sale <span>→</span></div>
             </div>
           </div>
-
         </div>
 
       </div>
     </section>
 
-    <!-- Projects Showroom Section (Filter Chips + Responsive Grid) -->
+    <!-- Projects Showroom Section (Search & Sort + Filter Chips + Grid) -->
     <section class="section-projects" id="projects">
       <div class="container">
-        
         <div class="projects-header-wrap">
           <h2>Project Showroom</h2>
           <p>Try any build live inside this page. Ready-made projects marked with prices can be acquired immediately.</p>
         </div>
 
-        <!-- Filter Chips Bar (Segmented Controls) -->
-        <div class="filter-bar" id="filterChipsWrap" role="tablist" aria-label="Project Categories">
-          <!-- Populated by script.js -->
+        <!-- Search and Sort Controls -->
+        <div class="search-sort-container">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="projectSearchInput" class="project-search-input" placeholder="Search by title, description, or tech stack..." aria-label="Search projects" autocomplete="off" />
+            <button id="projectSearchClear" class="search-clear-btn" aria-label="Clear search">✕</button>
+          </div>
+          <div class="sort-select-wrap">
+            <label for="projectSortSelect" class="sort-label">Sort:</label>
+            <select id="projectSortSelect" class="project-sort-select" aria-label="Sort projects">
+              <option value="featured">Featured First</option>
+              <option value="newest">Newest First</option>
+              <option value="forsale">For Sale First</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Responsive Projects Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop -->
-        <div class="projects-grid" id="projectsGrid">
-          <!-- Dynamically rendered by script.js -->
-        </div>
+        <!-- Filter Chips Bar -->
+        <div class="filter-bar" id="filterChipsWrap" role="tablist" aria-label="Project Categories"></div>
 
+        <!-- Responsive Projects Grid -->
+        <div class="projects-grid" id="projectsGrid"></div>
       </div>
     </section>
 
-    <!-- Bottom Wide Featured Banner: "Featured For Sale Project" -->
+    <!-- Bottom Wide Featured Banner -->
     <section class="section-featured-banner">
       <div class="container">
         <div class="featured-sale-banner">
           <div class="featured-banner-grid">
-            
             <div class="featured-visual-box">
               <div class="featured-ring">
                 <div class="featured-preview-card">
@@ -287,9 +303,7 @@
 
             <div class="featured-content">
               <div class="banner-badge">FEATURED FOR SALE PROJECT</div>
-              <h2 class="banner-title" id="saleBannerTitle">
-                Bazario Marketplace
-              </h2>
+              <h2 class="banner-title" id="saleBannerTitle">Bazario Marketplace</h2>
               <p class="banner-desc" id="saleBannerDesc">
                 Complete mobile-first e-commerce app with cart management, catalog browsing, and instant WhatsApp ordering. Turnkey source code ready for immediate handover.
               </p>
@@ -304,8 +318,56 @@
                 </button>
               </div>
             </div>
-
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section (Before Contact) -->
+    <section class="section-services" id="services">
+      <div class="container">
+        <div class="section-head-split">
+          <div>
+            <div class="hero-overline" style="margin-bottom: 6px;">CUSTOM WORK</div>
+            <h2 class="section-title">Services &amp; Development</h2>
+          </div>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Direct Developer Rates</span>
+        </div>
+
+        <div class="services-grid" id="servicesGrid">
+          <!-- Dynamically populated from SERVICES in projects.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section-testimonials" id="testimonials">
+      <div class="container">
+        <div class="section-head-split">
+          <div>
+            <div class="hero-overline" style="margin-bottom: 6px;">SOCIAL PROOF</div>
+            <h2 class="section-title">Client Feedback</h2>
+          </div>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Verified Turnkey Buyers</span>
+        </div>
+
+        <div class="testimonials-carousel" id="testimonialsCarousel">
+          <!-- Dynamically populated from TESTIMONIALS in projects.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section (Accordion) -->
+    <section class="section-faq" id="faq">
+      <div class="container">
+        <div class="projects-header-wrap" style="text-align: left; margin-bottom: 24px;">
+          <div class="hero-overline" style="margin-bottom: 6px;">CLARITY &amp; PRICING</div>
+          <h2 style="font-size: clamp(1.6rem, 5vw, 2.2rem);">Frequently Asked Questions</h2>
+          <p style="margin: 0; max-width: 600px;">Everything you need to know about buying turnkey projects, post-purchase support, and custom software builds.</p>
+        </div>
+
+        <div class="faq-accordion" id="faqAccordion">
+          <!-- Dynamically populated from FAQ in projects.js -->
         </div>
       </div>
     </section>
@@ -315,27 +377,22 @@
       <div class="container">
         <div class="about-card">
           <div class="about-grid">
-            
             <div class="about-left">
-              <h2>About <span class="bind-brand-name">Alex Rivera</span></h2>
-              <p class="about-text" id="aboutText">
-                Loading developer biography...
-              </p>
+              <h2>About <span class="bind-brand-name">Developer</span></h2>
+              <p class="about-text" id="aboutText">Loading developer biography...</p>
 
               <div class="skills-heading">Technical Stack &amp; Skills</div>
-              <div class="skills-tags-wrap" id="skillsList">
-                <!-- Dynamically populated from CONFIG.skills -->
-              </div>
+              <div class="skills-tags-wrap" id="skillsList"></div>
             </div>
 
             <div class="about-stats-box">
               <div class="stat-row">
                 <span class="stat-label">Total Portfolio Builds</span>
-                <span class="stat-number bind-total-projects">5</span>
+                <span class="stat-number bind-total-projects">6</span>
               </div>
               <div class="stat-row">
                 <span class="stat-label">Turnkey Projects For Sale</span>
-                <span class="stat-number" id="forSaleCount">3</span>
+                <span class="stat-number" id="forSaleCount">4</span>
               </div>
               <div class="stat-row">
                 <span class="stat-label">Interactive Live Demos</span>
@@ -346,33 +403,91 @@
                 <span class="stat-number" style="font-size: 1rem; color: #86efac;">● Available for Hire</span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact & Request a Quote Section -->
     <section class="section-contact" id="contact">
       <div class="container">
         <div class="contact-box">
           <h2>Let's Build Your Next Project</h2>
-          <p>
-            Need a custom web app or want to acquire one of the turnkey builds above? Get in touch directly on WhatsApp for an instant response.
-          </p>
+          <p>Need a custom web app or want to acquire one of the turnkey builds above? Send a quick WhatsApp quote request or call directly.</p>
 
-          <div class="contact-btn-group">
-            <a href="#" id="contactWaBtn" class="btn-contact-wa" target="_blank" rel="noopener noreferrer">
-              <span>💬</span>
-              <span>Chat on WhatsApp</span>
-            </a>
-            <a href="#" id="contactEmailBtn" class="btn-contact-email">
-              <span>✉️</span>
-              <span>Send Email</span>
-            </a>
+          <!-- Request a Quote Form -->
+          <div class="quote-form-card">
+            <h3 class="quote-form-title">⚡ Request a Quick Quote</h3>
+            <p class="quote-form-sub">Fill out the brief below and click send. It will format your inquiry into a pre-filled WhatsApp message instantly.</p>
+            
+            <form id="quoteForm" class="quote-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="quoteName" class="form-label">Your Name <span style="color:var(--accent-lime); font-weight:bold;">*</span></label>
+                  <input type="text" id="quoteName" class="form-control" placeholder="e.g. John Doe" required />
+                  <span class="form-error" id="quoteNameError">Please enter your name.</span>
+                </div>
+                
+                <div class="form-group">
+                  <label for="quoteType" class="form-label">Project Type</label>
+                  <select id="quoteType" class="form-control">
+                    <option value="Static Website">Static Website</option>
+                    <option value="Android App">Android App</option>
+                    <option value="Web Game">Interactive Web Game</option>
+                    <option value="Custom Project">Custom Software / SaaS</option>
+                    <option value="Turnkey Code">Buy Existing Project</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="quoteBudget" class="form-label">Estimated Budget</label>
+                <select id="quoteBudget" class="form-control">
+                  <option value="Under Rs 10,000">Under Rs 10,000</option>
+                  <option value="Rs 10,000 - 25,000">Rs 10,000 – Rs 25,000</option>
+                  <option value="Rs 25,000 - 50,000">Rs 25,000 – Rs 50,000</option>
+                  <option value="Rs 50,000+">Rs 50,000+</option>
+                  <option value="Flexible / Discuss">Flexible / Let's Discuss</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="quoteDetails" class="form-label">Project Details &amp; Requirements <span style="color:var(--accent-lime); font-weight:bold;">*</span></label>
+                <textarea id="quoteDetails" class="form-control" rows="3" placeholder="Briefly describe what you want built, target timeline, or features needed..." required></textarea>
+                <span class="form-error" id="quoteDetailsError">Please provide a few project details.</span>
+              </div>
+
+              <button type="submit" class="btn-primary-pill" style="width: 100%; justify-content: center; margin-top: 6px;">
+                <span>SEND QUOTE ON WHATSAPP</span>
+                <span>💬 →</span>
+              </button>
+            </form>
           </div>
 
-          <div class="social-links">
+          <!-- Direct Phone & Contact Details -->
+          <div class="direct-contact-bar">
+            <div class="direct-phone-display">
+              <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Direct Contact Line:</span>
+              <strong id="displayPhoneText" style="font-size: 1.15rem; color: #ffffff; letter-spacing: 0.05em;">+91 6006428863</strong>
+            </div>
+            
+            <div class="contact-btn-group" style="margin-bottom: 0;">
+              <a href="#" id="contactCallBtn" class="btn-contact-call">
+                <span>📞</span>
+                <span>Call Me</span>
+              </a>
+              <a href="#" id="contactWaBtn" class="btn-contact-wa" target="_blank" rel="noopener noreferrer">
+                <span>💬</span>
+                <span>Chat on WhatsApp</span>
+              </a>
+              <a href="#" id="contactEmailBtn" class="btn-contact-email">
+                <span>✉️</span>
+                <span>Send Email</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="social-links" style="margin-top: 24px;">
             <a href="#" id="githubLink" class="social-link" target="_blank" rel="noopener noreferrer">
               <span>🐙</span> GitHub
             </a>
@@ -390,20 +505,34 @@
   <footer class="footer">
     <div class="container footer-content">
       <div>
-        &copy; <span id="currentYear">2026</span> <strong class="bind-brand-name">Alex Rivera</strong>. All rights reserved.
+        &copy; <span id="currentYear">2026</span> <strong class="bind-brand-name">Developer</strong>. All rights reserved.
       </div>
       <div>
-        Built with plain HTML, CSS &amp; vanilla JavaScript. Zero build step.
+        Last updated: <span id="footerLastUpdated">October 2026</span> · Built with plain HTML, CSS &amp; vanilla JS.
       </div>
     </div>
   </footer>
 
   <!-- ==========================================================================
-       Live Demo Full-Screen Modal (Core Feature)
+       Floating Action Buttons & Notifications
+       ========================================================================== -->
+  <!-- Floating Quick WhatsApp Button -->
+  <a href="#" id="floatingWaBtn" class="floating-wa-btn" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
+    <span>💬</span>
+  </a>
+
+  <!-- Back to Top Button -->
+  <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top" title="Scroll to top">
+    ↑
+  </button>
+
+  <!-- Reusable Toast Component -->
+  <div id="toastNotification" class="toast-notification" role="status" aria-live="polite"></div>
+
+  <!-- ==========================================================================
+       Live Demo Full-Screen Modal
        ========================================================================== -->
   <div class="modal-overlay" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    
-    <!-- Modal Top Bar -->
     <div class="modal-top-bar">
       <div class="modal-title-wrap">
         <span class="type-tag modal-type-badge" id="modalTypeTag">APP</span>
@@ -411,41 +540,40 @@
       </div>
 
       <div class="modal-actions">
+        <!-- Share button in modal -->
+        <button class="btn-modal-action" id="modalShareBtn" title="Share project link">
+          <span>🔗</span>
+          <span class="hide-on-mobile">Share</span>
+        </button>
+
         <!-- Open in New Tab -->
         <a href="#" id="modalNewTabBtn" class="btn-modal-action" target="_blank" rel="noopener noreferrer" title="Open preview in a new tab">
           <span>↗</span>
           <span class="hide-on-mobile">New Tab</span>
         </a>
 
-        <!-- Download APK (Shown only if project.apkUrl exists) -->
+        <!-- Download APK -->
         <a href="#" id="modalApkBtn" class="btn-modal-action" download style="display:none;" title="Download Android APK package">
           <span>⬇</span>
           <span>APK</span>
         </a>
 
-        <!-- WhatsApp Buy / Enquire -->
+        <!-- Buy / Enquire WhatsApp -->
         <a href="#" id="modalBuyBtn" class="btn-modal-action btn-modal-buy" target="_blank" rel="noopener noreferrer">
           <span>💬</span>
-          <span>Buy Project</span>
+          <span id="modalBuyBtnText">Buy Project</span>
         </a>
 
-        <!-- Close Button (X) -->
-        <button class="btn-modal-close" id="modalCloseBtn" aria-label="Close modal">
-          ✕
-        </button>
+        <button class="btn-modal-close" id="modalCloseBtn" aria-label="Close modal">✕</button>
       </div>
     </div>
 
-    <!-- Modal Body -->
     <div class="modal-body">
-      
-      <!-- Loading Spinner -->
       <div class="modal-spinner-wrap" id="modalSpinner">
         <div class="spinner"></div>
         <div class="spinner-text">Loading live interactive preview...</div>
       </div>
 
-      <!-- Fallback Error Message (Shown if iframe fails or exceeds 8 seconds) -->
       <div class="modal-error-box" id="modalErrorBox">
         <div class="error-icon">⚠️</div>
         <h4>This site cannot be previewed here</h4>
@@ -455,14 +583,10 @@
         </a>
       </div>
 
-      <!-- Iframe / Video Container -->
       <div id="modalFrameContainer" style="width:100%; height:100%;"></div>
-
     </div>
-
   </div>
 
-  <!-- Vanilla Scripts: Only projects.js and script.js -->
   <script src="./projects.js"></script>
   <script src="./script.js"></script>
 </body>
