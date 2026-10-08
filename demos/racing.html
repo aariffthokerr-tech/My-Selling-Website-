@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Turbo Neon Racer</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; touch-action:manipulation; }
+    body { background:#040a06; color:#ecfdf5; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; overflow:hidden; }
+    #gameCanvas { background:#06140b; border:2px solid #1c3c27; border-radius:12px; max-width:100%; box-shadow:0 0 30px rgba(190,242,100,0.15); }
+    .hud { width:320px; display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:700; color:#bef264; }
+    .controls { display:flex; gap:16px; margin-top:10px; width:320px; justify-content:center; }
+    .ctrl-btn { flex:1; height:44px; background:#0e2417; border:1px solid #224d31; color:#bef264; font-size:18px; font-weight:bold; border-radius:8px; cursor:pointer; }
+    .ctrl-btn:active { background:#bef264; color:#051209; }
+    .subtext { font-size:11px; color:#64748b; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <div>SCORE: <span id="scoreVal">0</span></div>
+    <div>SPEED: <span id="speedVal">140</span> MPH</div>
+  </div>
+  <canvas id="gameCanvas" width="320" height="420"></canvas>
+  <div class="controls">
+    <button class="ctrl-btn" id="btnLeft" onmousedown="steer(-1)" onmouseup="steer(0)" ontouchstart="steer(-1)" ontouchend="steer(0)">◀ LEFT</button>
+    <button class="ctrl-btn" id="btnRight" onmousedown="steer(1)" onmouseup="steer(0)" ontouchstart="steer(1)" ontouchend="steer(0)">RIGHT ▶</button>
+  </div>
+  <div class="subtext">Use Left/Right Arrow Keys or Touch Buttons</div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreVal = document.getElementById('scoreVal');
+    const speedVal = document.getElementById('speedVal');
+
+    let playerX = 160;
+    let playerY = 350;
+    let dir = 0;
+    let score = 0;
+    let speed = 140;
+    let gameOver = false;
+    let roadOffset = 0;
+
+    let enemies = [
+      { x: 100, y: -50, color: '#f87171' },
+      { x: 200, y: -200, color: '#38bdf8' }
+    ];
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'a') dir = -1;
+      if (e.key === 'ArrowRight' || e.key === 'd') dir = 1;
+      if (gameOver && e.key === ' ') restart();
+    });
+    window.addEventListener('keyup', e => {
+      if ((e.key === 'ArrowLeft' && dir === -1) || (e.key === 'ArrowRight' && dir === 1)) dir = 0;
+    });
+
+    function steer(d) {
+      if (gameOver) { restart(); return; }
+      dir = d;
+    }
+
+    function restart() {
+      playerX = 160;
+      score = 0;
+      gameOver = false;
+      enemies = [
+        { x: 100, y: -50, color: '#f87171' },
+        { x: 200, y: -200, color: '#38bdf8' }
+      ];
+      loop();
+    }
+
+    function loop() {
+      if (gameOver) {
+        ctx.fillStyle = 'rgba(4, 10, 6, 0.85)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#bef264';
+        ctx.font = '22px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CRASH! GAME OVER', 160, 190);
+        ctx.font = '14px sans-serif';
+        ctx.fillStyle = '#f0fdf4';
+        ctx.fillText('Final Score: ' + score, 160, 220);
+        ctx.fillText('Tap button to retry', 160, 250);
+        return;
+      }
+
+      roadOffset = (roadOffset + 8) % 40;
+      score++;
+      scoreVal.textContent = score;
+
+      playerX += dir * 4.5;
+      if (playerX < 60) playerX = 60;
+      if (playerX > 260) playerX = 260;
+
+      // Draw road
+      ctx.fillStyle = '#06130a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Road grass borders
+      ctx.fillStyle = '#092112';
+      ctx.fillRect(0, 0, 40, canvas.height);
+      ctx.fillRect(280, 0, 40, canvas.height);
+
+      // Lane dividers
+      ctx.strokeStyle = '#1e482d';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([20, 20]);
+      ctx.lineDashOffset = -roadOffset;
+      ctx.beginPath();
+      ctx.moveTo(120, 0); ctx.lineTo(120, canvas.height);
+      ctx.moveTo(200, 0); ctx.lineTo(200, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw Enemies
+      enemies.forEach(en => {
+        en.y += 5;
+        if (en.y > 450) {
+          en.y = -60;
+          en.x = 60 + Math.random() * 190;
+        }
+        ctx.fillStyle = en.color;
+        ctx.beginPath();
+        ctx.roundRect(en.x - 14, en.y - 24, 28, 48, 6);
+        ctx.fill();
+
+        // Headlights
+        ctx.fillStyle = '#fef08a';
+        ctx.fillRect(en.x - 10, en.y + 18, 6, 4);
+        ctx.fillRect(en.x + 4, en.y + 18, 6, 4);
+
+        // Collision check
+        if (Math.abs(playerX - en.x) < 24 && Math.abs(playerY - en.y) < 40) {
+          gameOver = true;
+        }
+      });
+
+      // Draw Player Car
+      ctx.fillStyle = '#bef264';
+      ctx.beginPath();
+      ctx.roundRect(playerX - 16, playerY - 26, 32, 52, 6);
+      ctx.fill();
+      // Cockpit
+      ctx.fillStyle = '#051208';
+      ctx.fillRect(playerX - 10, playerY - 8, 20, 16);
+      // Taillights
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(playerX - 12, playerY + 20, 6, 4);
+      ctx.fillRect(playerX + 6, playerY + 20, 6, 4);
+
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VELOCE - High Speed Typing Test</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    body { background: #060e09; color: #ecfdf5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    .box { max-width: 650px; width: 100%; background: #0a1910; border: 1px solid #1a3825; border-radius: 16px; padding: 24px; text-align: center; }
+    h1 { color: #bef264; font-size: 24px; margin-bottom: 4px; letter-spacing: 2px; }
+    p.sub { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+    .stats { display: flex; justify-content: space-around; margin-bottom: 20px; background: #08130c; padding: 12px; border-radius: 10px; border: 1px solid #14281c; }
+    .stat-val { font-size: 24px; font-weight: 800; color: #bef264; }
+    .stat-lbl { font-size: 11px; text-transform: uppercase; color: #64748b; margin-top: 2px; }
+    .prompt { font-size: 18px; line-height: 1.6; text-align: left; background: #07120a; border: 1px solid #183321; border-radius: 10px; padding: 16px; min-height: 80px; margin-bottom: 16px; }
+    .prompt span.correct { color: #86efac; }
+    .prompt span.wrong { color: #f87171; text-decoration: underline; }
+    .prompt span.cursor { border-left: 2px solid #bef264; animation: blink 1s infinite; }
+    @keyframes blink { 50% { border-color: transparent; } }
+    input { width: 100%; padding: 12px; background: #0f2418; border: 1px solid #234d31; border-radius: 8px; color: #fff; font-size: 16px; outline: none; }
+    input:focus { border-color: #bef264; }
+    .btn { margin-top: 16px; background: #bef264; color: #06120a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>VELOCE SPEED</h1>
+    <p class="sub">Test your typing accuracy and words per minute</p>
+    <div class="stats">
+      <div><div class="stat-val" id="wpm">0</div><div class="stat-lbl">WPM</div></div>
+      <div><div class="stat-val" id="acc">100%</div><div class="stat-lbl">Accuracy</div></div>
+      <div><div class="stat-val" id="time">30</div><div class="stat-lbl">Seconds</div></div>
+    </div>
+    <div class="prompt" id="promptText">The quick brown fox jumps over the lazy sleeping dog near the river stream. Code fast, think deep, and deploy with confidence every single day.</div>
+    <input type="text" id="typeInput" placeholder="Click here and start typing..." autofocus autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button class="btn" onclick="resetTest()">Restart Test</button>
+  </div>
+  <script>
+    const sampleText = "The quick brown fox jumps over the lazy sleeping dog near the river stream. Code fast, think deep, and deploy with confidence every single day.";
+    let startTime = null;
+    let timer = null;
+    let timeLeft = 30;
+    const input = document.getElementById('typeInput');
+    const wpmEl = document.getElementById('wpm');
+    const accEl = document.getElementById('acc');
+    const timeEl = document.getElementById('time');
+    const promptEl = document.getElementById('promptText');
+
+    function updateDisplay(val) {
+      let html = '';
+      let mistakes = 0;
+      for (let i = 0; i < sampleText.length; i++) {
+        if (i < val.length) {
+          if (val[i] === sampleText[i]) {
+            html += '<span class="correct">' + sampleText[i] + '</span>';
+          } else {
+            mistakes++;
+            html += '<span class="wrong">' + sampleText[i] + '</span>';
+          }
+        } else if (i === val.length) {
+          html += '<span class="cursor">' + sampleText[i] + '</span>';
+        } else {
+          html += sampleText[i];
+        }
+      }
+      promptEl.innerHTML = html;
+      const acc = val.length === 0 ? 100 : Math.max(0, Math.round(((val.length - mistakes) / val.length) * 100));
+      accEl.textContent = acc + '%';
+    }
+
+    input.addEventListener('input', () => {
+      const val = input.value;
+      if (!startTime && val.length > 0) {
+        startTime = Date.now();
+        timer = setInterval(() => {
+          timeLeft--;
+          timeEl.textContent = timeLeft;
+          const minutes = (30 - timeLeft) / 60;
+          const words = input.value.trim().split(/\s+/).filter(Boolean).length;
+          const wpm = minutes > 0 ? Math.round(words / minutes) : 0;
+          wpmEl.textContent = wpm;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            input.disabled = true;
+          }
+        }, 1000);
+      }
+      updateDisplay(val);
+    });
+
+    function resetTest() {
+      clearInterval(timer);
+      startTime = null;
+      timeLeft = 30;
+      timeEl.textContent = '30';
+      wpmEl.textContent = '0';
+      accEl.textContent = '100%';
+      input.value = '';
+      input.disabled = false;
+      promptEl.textContent = sampleText;
+      input.focus();
+    }
+  </script>
+</body>
+</html>

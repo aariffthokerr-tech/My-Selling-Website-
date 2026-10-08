@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Rivera - Freelance Developer Portfolio &amp; Project Showroom</title>
+  <meta name="description" content="Portfolio and interactive project showroom for freelance developer Alex Rivera. Test live web apps, websites, and games inside the browser or buy turnkey code on WhatsApp." />
+  
+  <!-- Open Graph / Social Sharing Meta -->
+  <meta property="og:title" content="Alex Rivera - Developer Portfolio &amp; Project Showroom" />
+  <meta property="og:description" content="Try live interactive web apps and games directly in your browser. Available for hire and turnkey code purchases." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google Fonts: Plus Jakarta Sans (Clean Modern Sans) & Caveat (Handwritten Script Accent) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Vanilla CSS Stylesheet (Compatible with Acode & GitHub Pages) -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- Sticky Header with Floating White Pill Navigation -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <!-- Owner Brand from CONFIG -->
+      <a href="#hero" class="brand" aria-label="Home">
+        <span class="brand-dot"></span>
+        <span class="bind-brand-name">Alex Rivera</span>
+      </a>
+
+      <!-- Floating White Pill Navigation (Desktop) -->
+      <nav class="floating-nav" aria-label="Main Navigation">
+        <a href="#hero" class="nav-item active">Home</a>
+        <a href="#projects" class="nav-item">Projects</a>
+        <a href="#projects" class="nav-item" onclick="ShowroomApp.setFilter('forsale')">For Sale</a>
+        <a href="#about" class="nav-item">About</a>
+        <a href="#contact" class="nav-item">Contact</a>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="header-actions">
+        <a href="#" id="headerWaBtn" class="btn-header-wa" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+          <span>💬</span>
+          <span>WhatsApp</span>
+        </a>
+        <button class="btn-mobile-menu" id="btnMobileMenu" aria-label="Toggle navigation menu">
+          ☰
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <a href="#hero" class="mobile-nav-item active">Home</a>
+      <a href="#types" class="mobile-nav-item">Browse Types</a>
+      <a href="#projects" class="mobile-nav-item">All Projects</a>
+      <a href="#projects" class="mobile-nav-item" onclick="ShowroomApp.setFilter('forsale')">For Sale</a>
+      <a href="#about" class="mobile-nav-item">About</a>
+      <a href="#contact" class="mobile-nav-item">Contact</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Hero Section (Dark Forest Green with Cursive Accent & Glowing Concentric Rings) -->
+    <section class="hero-section" id="hero">
+      <div class="container">
+        <div class="hero-grid">
+          
+          <!-- Left Hero Column -->
+          <div class="hero-content">
+            <div class="hero-overline">FREELANCE DEVELOPER</div>
+            
+            <h1 class="hero-title">
+              I Build Apps, Websites &amp; <span class="script-accent">Games.</span>
+            </h1>
+
+            <p class="hero-subtitle bind-tagline">
+              Explore live, production-ready web applications, tools &amp; browser games you can run directly inside this page.
+            </p>
+
+            <!-- Hero Action Buttons -->
+            <div class="hero-cta-row">
+              <a href="#projects" class="btn-primary-pill">
+                <span>VIEW PROJECTS</span>
+                <span>→</span>
+              </a>
+
+              <div class="btn-play-trigger" id="heroPlayTrigger" role="button" tabindex="0" title="Watch live interactive demo">
+                <div class="play-circle">▶</div>
+                <div class="play-text">
+                  <span class="play-text-title">Watch Live Demos</span>
+                  <span class="play-text-sub">Test run in browser</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row of 4 Trust Items (Computed from Data) -->
+            <div class="trust-badges-row">
+              <div class="trust-item">
+                <div class="trust-icon-box">💻</div>
+                <div class="trust-text">
+                  <span class="trust-title" id="trustCountProjects">5 Projects Built</span>
+                  <span class="trust-sub">Production Ready</span>
+                </div>
+              </div>
+
+              <div class="trust-item">
+                <div class="trust-icon-box">▶</div>
+                <div class="trust-text">
+                  <span class="trust-title" id="trustCountLive">5 Live Demos</span>
+                  <span class="trust-sub">Try In Browser</span>
+                </div>
+              </div>
+
+              <div class="trust-item">
+                <div class="trust-icon-box">🏷️</div>
+                <div class="trust-text">
+                  <span class="trust-title" id="trustCountSale">3 For Sale</span>
+                  <span class="trust-sub">Instant Source Code</span>
+                </div>
+              </div>
+
+              <div class="trust-item">
+                <div class="trust-icon-box">💬</div>
+                <div class="trust-text">
+                  <span class="trust-title">WhatsApp Reply</span>
+                  <span class="trust-sub">&lt; 1 Hour Direct</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Hero Visual Showcase (Browser & Mobile Device Frame Mockup over Halo Ring) -->
+          <div class="hero-visual">
+            <div class="visual-rings-container">
+              <div class="halo-ring halo-ring-1"></div>
+              <div class="halo-ring halo-ring-2"></div>
+              <div class="halo-ring halo-ring-3"></div>
+
+              <div class="device-stage">
+                <!-- Browser Window Mockup -->
+                <div class="browser-window" id="browserMockupTrigger" title="Click to launch live preview">
+                  <div class="browser-header">
+                    <div class="browser-dots">
+                      <span class="dot dot-red"></span>
+                      <span class="dot dot-yellow"></span>
+                      <span class="dot dot-green"></span>
+                    </div>
+                    <div class="browser-address">https://alexrivera.dev/showroom</div>
+                  </div>
+                  <div class="browser-content">
+                    <div>
+                      <div class="mockup-featured-tag">FEATURED BUILD</div>
+                      <div class="mockup-title">VELOCE Typing Test</div>
+                    </div>
+                    <div class="mockup-code-lines">
+                      <div class="code-bar" style="width: 75%; background: #c6f432; opacity: 0.85;"></div>
+                      <div class="code-bar" style="width: 90%;"></div>
+                      <div class="code-bar" style="width: 60%;"></div>
+                    </div>
+                    <div class="mockup-status-row">
+                      <span>● In-Browser Runtime</span>
+                      <span style="color: var(--accent-lime); font-weight: bold;">TEST LIVE ↗</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Overlapping Phone Mockup -->
+                <div class="phone-mockup" id="phoneMockupTrigger" title="Click to test Bazario app">
+                  <div class="phone-notch"></div>
+                  <div class="phone-screen">
+                    <div>
+                      <span class="phone-badge">TURNKEY APP</span>
+                      <div class="phone-app-name">Bazario Store</div>
+                    </div>
+                    <span class="phone-btn-tap">Tap to Try ▶</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- "Browse By Type" Section (4 Cards: Apps, Websites, Games, For Sale) -->
+    <section class="section-browse-type" id="types">
+      <div class="container">
+        
+        <div class="section-head-split">
+          <h2 class="section-title">Browse By Type</h2>
+          <a href="#projects" class="section-link">View All Projects <span>→</span></a>
+        </div>
+
+        <div class="type-cards-grid">
+          
+          <!-- Card 1: Apps -->
+          <div class="type-card" data-filter="app">
+            <div class="type-card-icon-box">📱</div>
+            <div class="type-card-info">
+              <h3>Apps</h3>
+              <div class="type-card-count" id="typeCountApps">1 Available</div>
+              <div class="type-card-link">Browse Apps <span>→</span></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Websites -->
+          <div class="type-card" data-filter="website">
+            <div class="type-card-icon-box">🌐</div>
+            <div class="type-card-info">
+              <h3>Websites</h3>
+              <div class="type-card-count" id="typeCountWebsites">3 Available</div>
+              <div class="type-card-link">Browse Websites <span>→</span></div>
+            </div>
+          </div>
+
+          <!-- Card 3: Games -->
+          <div class="type-card" data-filter="game">
+            <div class="type-card-icon-box">🎮</div>
+            <div class="type-card-info">
+              <h3>Games</h3>
+              <div class="type-card-count" id="typeCountGames">1 Available</div>
+              <div class="type-card-link">Browse Games <span>→</span></div>
+            </div>
+          </div>
+
+          <!-- Card 4: For Sale -->
+          <div class="type-card" data-filter="forsale">
+            <div class="type-card-icon-box">🏷️</div>
+            <div class="type-card-info">
+              <h3>For Sale</h3>
+              <div class="type-card-count" id="typeCountSale">3 Turnkey Builds</div>
+              <div class="type-card-link">Browse For Sale <span>→</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projects Showroom Section (Filter Chips + Responsive Grid) -->
+    <section class="section-projects" id="projects">
+      <div class="container">
+        
+        <div class="projects-header-wrap">
+          <h2>Project Showroom</h2>
+          <p>Try any build live inside this page. Ready-made projects marked with prices can be acquired immediately.</p>
+        </div>
+
+        <!-- Filter Chips Bar (Segmented Controls) -->
+        <div class="filter-bar" id="filterChipsWrap" role="tablist" aria-label="Project Categories">
+          <!-- Populated by script.js -->
+        </div>
+
+        <!-- Responsive Projects Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop -->
+        <div class="projects-grid" id="projectsGrid">
+          <!-- Dynamically rendered by script.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bottom Wide Featured Banner: "Featured For Sale Project" -->
+    <section class="section-featured-banner">
+      <div class="container">
+        <div class="featured-sale-banner">
+          <div class="featured-banner-grid">
+            
+            <div class="featured-visual-box">
+              <div class="featured-ring">
+                <div class="featured-preview-card">
+                  <div class="featured-preview-initials" id="saleBannerInitials">BZ</div>
+                  <div class="featured-preview-badge" id="saleBannerPrice">PRICE: Rs 15,000</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="featured-content">
+              <div class="banner-badge">FEATURED FOR SALE PROJECT</div>
+              <h2 class="banner-title" id="saleBannerTitle">
+                Bazario Marketplace
+              </h2>
+              <p class="banner-desc" id="saleBannerDesc">
+                Complete mobile-first e-commerce app with cart management, catalog browsing, and instant WhatsApp ordering. Turnkey source code ready for immediate handover.
+              </p>
+              
+              <div class="banner-cta-group">
+                <a href="#" class="btn-primary-pill" id="saleBannerBuyBtn" target="_blank" rel="noopener noreferrer">
+                  <span>BUY ON WHATSAPP</span>
+                  <span>→</span>
+                </a>
+                <button class="btn-card-demo" id="saleBannerDemoBtn" style="min-height: 48px; border-radius: var(--radius-full); padding: 14px 24px;">
+                  <span>▶</span> Test Live Demo
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section-about" id="about">
+      <div class="container">
+        <div class="about-card">
+          <div class="about-grid">
+            
+            <div class="about-left">
+              <h2>About <span class="bind-brand-name">Alex Rivera</span></h2>
+              <p class="about-text" id="aboutText">
+                Loading developer biography...
+              </p>
+
+              <div class="skills-heading">Technical Stack &amp; Skills</div>
+              <div class="skills-tags-wrap" id="skillsList">
+                <!-- Dynamically populated from CONFIG.skills -->
+              </div>
+            </div>
+
+            <div class="about-stats-box">
+              <div class="stat-row">
+                <span class="stat-label">Total Portfolio Builds</span>
+                <span class="stat-number bind-total-projects">5</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Turnkey Projects For Sale</span>
+                <span class="stat-number" id="forSaleCount">3</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Interactive Live Demos</span>
+                <span class="stat-number" id="liveDemosCount">5</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">Freelance Availability</span>
+                <span class="stat-number" style="font-size: 1rem; color: #86efac;">● Available for Hire</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section-contact" id="contact">
+      <div class="container">
+        <div class="contact-box">
+          <h2>Let's Build Your Next Project</h2>
+          <p>
+            Need a custom web app or want to acquire one of the turnkey builds above? Get in touch directly on WhatsApp for an instant response.
+          </p>
+
+          <div class="contact-btn-group">
+            <a href="#" id="contactWaBtn" class="btn-contact-wa" target="_blank" rel="noopener noreferrer">
+              <span>💬</span>
+              <span>Chat on WhatsApp</span>
+            </a>
+            <a href="#" id="contactEmailBtn" class="btn-contact-email">
+              <span>✉️</span>
+              <span>Send Email</span>
+            </a>
+          </div>
+
+          <div class="social-links">
+            <a href="#" id="githubLink" class="social-link" target="_blank" rel="noopener noreferrer">
+              <span>🐙</span> GitHub
+            </a>
+            <a href="#" id="instaLink" class="social-link" target="_blank" rel="noopener noreferrer">
+              <span>📸</span> Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div>
+        &copy; <span id="currentYear">2026</span> <strong class="bind-brand-name">Alex Rivera</strong>. All rights reserved.
+      </div>
+      <div>
+        Built with plain HTML, CSS &amp; vanilla JavaScript. Zero build step.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       Live Demo Full-Screen Modal (Core Feature)
+       ========================================================================== -->
+  <div class="modal-overlay" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    
+    <!-- Modal Top Bar -->
+    <div class="modal-top-bar">
+      <div class="modal-title-wrap">
+        <span class="type-tag modal-type-badge" id="modalTypeTag">APP</span>
+        <h3 class="modal-title" id="modalTitle">Project Title</h3>
+      </div>
+
+      <div class="modal-actions">
+        <!-- Open in New Tab -->
+        <a href="#" id="modalNewTabBtn" class="btn-modal-action" target="_blank" rel="noopener noreferrer" title="Open preview in a new tab">
+          <span>↗</span>
+          <span class="hide-on-mobile">New Tab</span>
+        </a>
+
+        <!-- Download APK (Shown only if project.apkUrl exists) -->
+        <a href="#" id="modalApkBtn" class="btn-modal-action" download style="display:none;" title="Download Android APK package">
+          <span>⬇</span>
+          <span>APK</span>
+        </a>
+
+        <!-- WhatsApp Buy / Enquire -->
+        <a href="#" id="modalBuyBtn" class="btn-modal-action btn-modal-buy" target="_blank" rel="noopener noreferrer">
+          <span>💬</span>
+          <span>Buy Project</span>
+        </a>
+
+        <!-- Close Button (X) -->
+        <button class="btn-modal-close" id="modalCloseBtn" aria-label="Close modal">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      
+      <!-- Loading Spinner -->
+      <div class="modal-spinner-wrap" id="modalSpinner">
+        <div class="spinner"></div>
+        <div class="spinner-text">Loading live interactive preview...</div>
+      </div>
+
+      <!-- Fallback Error Message (Shown if iframe fails or exceeds 8 seconds) -->
+      <div class="modal-error-box" id="modalErrorBox">
+        <div class="error-icon">⚠️</div>
+        <h4>This site cannot be previewed here</h4>
+        <p>This project uses external security policies (X-Frame-Options) that prevent embedded iframe viewing on this device.</p>
+        <a href="#" id="modalErrorNewTabBtn" target="_blank" rel="noopener noreferrer" class="btn-primary-pill" style="font-size:0.85rem; padding:10px 22px;">
+          <span>Open In New Tab ↗</span>
+        </a>
+      </div>
+
+      <!-- Iframe / Video Container -->
+      <div id="modalFrameContainer" style="width:100%; height:100%;"></div>
+
+    </div>
+
+  </div>
+
+  <!-- Vanilla Scripts: Only projects.js and script.js -->
+  <script src="./projects.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
