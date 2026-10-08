@@ -14,7 +14,7 @@ const CONFIG = {
   // WhatsApp Number: country code + number, NO plus sign, NO spaces, NO dashes.
   // Example for US (+1 555-234-5678): "15552345678"
   // Example for India (+91 98765-43210): "919876543210"
-  whatsappNumber: "6006428863",
+  whatsappNumber: "91 6006428863",
   
   // Contact & Socials
   email: "alex.rivera.developer@gmail.com",
